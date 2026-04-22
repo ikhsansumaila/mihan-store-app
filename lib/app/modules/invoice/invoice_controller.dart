@@ -5,6 +5,7 @@ import 'cart_item_model.dart';
 class InvoiceController extends GetxController {
   var customerName = ''.obs;
   var items = <CartItemModel>[].obs;
+  var isLunas = false.obs;
 
   void addItem(CartItemModel item) {
     items.add(item);

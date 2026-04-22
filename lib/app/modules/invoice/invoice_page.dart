@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../utils/currency_format.dart';
+import '../../utils/currency_input_formatter.dart';
 import 'cart_item_model.dart';
 import 'invoice_controller.dart';
 import 'invoice_service.dart';
@@ -53,7 +55,8 @@ class InvoicePage extends StatelessWidget {
                   child: TextField(
                     controller: priceC,
                     keyboardType: TextInputType.number,
-                    decoration: InputDecoration(labelText: "Harga"),
+                    inputFormatters: [CurrencyInputFormatter()],
+                    decoration: InputDecoration(labelText: "Harga", prefixText: "Rp "),
                   ),
                 ),
                 IconButton(
@@ -62,8 +65,8 @@ class InvoicePage extends StatelessWidget {
                     c.addItem(
                       CartItemModel(
                         name: productC.text,
-                        qty: int.parse(qtyC.text),
-                        price: int.parse(priceC.text),
+                        qty: int.tryParse(qtyC.text.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0,
+                        price: int.tryParse(priceC.text.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0,
                       ),
                     );
                     productC.clear();
@@ -84,8 +87,14 @@ class InvoicePage extends StatelessWidget {
                   itemBuilder: (_, i) {
                     final item = c.items[i];
                     return ListTile(
-                      title: Text(item.name),
-                      subtitle: Text("${item.qty} x ${item.price} = ${item.total}"),
+                      dense: true,
+                      visualDensity: const VisualDensity(vertical: -4),
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(item.name, style: TextStyle(fontSize: 16)),
+                      subtitle: Text(
+                        "${item.qty} x ${CurrencyFormat.convertToIdr(item.price)} = ${CurrencyFormat.convertToIdr(item.total)}",
+                        style: TextStyle(fontSize: 14),
+                      ),
                       trailing: IconButton(
                         icon: Icon(Icons.delete),
                         onPressed: () => c.removeItem(i),
@@ -99,12 +108,25 @@ class InvoicePage extends StatelessWidget {
             /// TOTAL
             Obx(
               () => Text(
-                "TOTAL: Rp ${c.total}",
+                "TOTAL: ${CurrencyFormat.convertToIdr(c.total)}",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
 
             SizedBox(height: 10),
+
+            /// CHECKBOX LUNAS
+            Obx(
+              () => CheckboxListTile(
+                title: Text("Pembayaran Sudah Lunas?"),
+                value: c.isLunas.value,
+                onChanged: (val) {
+                  if (val != null) c.isLunas.value = val;
+                },
+                controlAffinity: ListTileControlAffinity.leading,
+                contentPadding: EdgeInsets.zero,
+              ),
+            ),
 
             /// BUTTONS
             Row(
