@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import 'env.dart';
 
 class ApiConfig {
@@ -26,7 +28,10 @@ class ApiConfig {
   static const String regions = "/regions";
 
   // Google OAuth Client ID dari mihan-store-web (dibaca dari .env via envied)
-  static final String googleClientId = Env.googleClientId;
+  static final String _googleClientIdDebug = Env.googleClientIdDebug;
+  static final String _googleClientIdRelease = Env.googleClientIdRelease;
+
+  static String get googleClientId => kDebugMode ? _googleClientIdDebug : _googleClientIdRelease;
 
   // Email Admin dari .env via envied (dipisah koma)
   static final String _adminEmailsEnv = Env.adminEmails;

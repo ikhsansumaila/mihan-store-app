@@ -9,8 +9,11 @@ abstract class Env {
   @EnviedField(varName: 'API_BASE_URL')
   static final String apiBaseUrl = _Env.apiBaseUrl;
 
-  @EnviedField(varName: 'GOOGLE_CLIENT_ID')
-  static final String googleClientId = _Env.googleClientId;
+  @EnviedField(varName: 'GOOGLE_CLIENT_ID_DEBUG')
+  static final String googleClientIdDebug = _Env.googleClientIdDebug;
+
+  @EnviedField(varName: 'GOOGLE_CLIENT_ID_RELEASE')
+  static final String googleClientIdRelease = _Env.googleClientIdRelease;
 
   @EnviedField(varName: 'ADMIN_EMAILS')
   static final String adminEmails = _Env.adminEmails;
